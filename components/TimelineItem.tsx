@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, Copy, Utensils, Train, Bed, Info, AlertTriangle, Edit2, Check, X, Snowflake, Map as MapIcon, Trash2 } from 'lucide-react';
 import { TravelItem, ItemType } from '../types';
 
@@ -14,6 +14,11 @@ const TimelineItem: React.FC<Props> = ({ item, onUpdate, onDelete }) => {
   const [editedItem, setEditedItem] = useState(item);
   const [showToast, setShowToast] = useState(false);
   const [showMapOptions, setShowMapOptions] = useState(false);
+
+  // Sync editedItem with item prop whenever the item changes (e.g., after save)
+  useEffect(() => {
+    setEditedItem(item);
+  }, [item]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);

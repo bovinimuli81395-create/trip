@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Map, Plus, CheckSquare } from 'lucide-react';
 import TimelineItem from './components/TimelineItem';
 import { DayPlan, TravelItem } from './types';
@@ -124,7 +124,21 @@ const INITIAL_PLAN: DayPlan[] = [
 ];
 
 const App: React.FC = () => {
-  const [days, setDays] = useState<DayPlan[]>(INITIAL_PLAN);
+  // Initialize state from LocalStorage if available, otherwise use INITIAL_PLAN
+  const [days, setDays] = useState<DayPlan[]>(() => {
+    try {
+      const savedPlan = localStorage.getItem('shanghai-trip-plan');
+      return savedPlan ? JSON.parse(savedPlan) : INITIAL_PLAN;
+    } catch (error) {
+      console.error("Failed to load plan from local storage:", error);
+      return INITIAL_PLAN;
+    }
+  });
+
+  // Save to LocalStorage whenever 'days' changes
+  useEffect(() => {
+    localStorage.setItem('shanghai-trip-plan', JSON.stringify(days));
+  }, [days]);
 
   const handleUpdateItem = (dayId: string, updatedItem: TravelItem) => {
     setDays(prevDays => prevDays.map(day => {
